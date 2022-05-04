@@ -1,0 +1,32 @@
+$default-theme: (
+        "font": "'Libre Baskerville', serif",
+        "background-color": #f7ede2,
+);
+
+$natural-theme: (
+        "font": "'Bitter', serif",
+        "background-color": #e8ce8d,
+);
+
+@mixin applyTheme($theme: $default-theme){
+  $font: map-get($theme, "font");
+  $background-color: map-get($theme, "background-color");
+
+  div.v-application{
+    font-family: $font;
+    background-color: $background-color;
+    a{
+      color: var(--v-secondary-base);
+      text-decoration-color: var(--v-secondary-base);
+    }
+  }
+}
+
+.default{
+  @include applyTheme($default-theme);
+}
+
+.natural{
+  @include applyTheme($natural-theme);
+}
+

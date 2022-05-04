@@ -1,8 +1,12 @@
 import Vue from 'vue'
-import App from './App.vue'
+import App from "@/App";
+import {firestorePlugin} from "vuefire";
+import './styles/themes.scss';
 
-Vue.config.productionTip = false
+
+// Make vuefire available throughout the project
+Vue.use(firestorePlugin);
 
 new Vue({
-  render: h => h(App),
+    render: h => h(App),
 }).$mount('#app')
