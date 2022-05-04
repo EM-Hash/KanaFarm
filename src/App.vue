@@ -27,7 +27,6 @@
     data(){
       return {
         user: null,
-        homePage: 'home-page-guest',
         avatarUrl: '',
       }
     },
@@ -35,21 +34,28 @@
       theme(){
         return this.user ? this.user.theme : 'default';
       },
+      homePage(){
+        return this.user ? 'farm-hub-page' : 'home-page-guest';
+      }
     },
     components: {SiteFooter, SiteBanner},
     methods: {
-      changeTheme(theme){
+      changeTheme(){
         //TODO: Change theme for the user
         //Change the theme in the app
-        this.$vuetify.theme.themes.light = themes[theme];
+        this.updateTheme();
+      },
+      updateTheme(){
+        this.$vuetify.theme.themes.light = themes[this.theme];
       }
     },
     router,
     vuetify,
     firebase,
+    updated(){
+      this.updateTheme();
+    },
     mounted(){
-      this.$vuetify.theme.themes.light = themes[this.theme];
-
       auth.onAuthStateChanged(user => {
         if(user){
           let targetUser;
@@ -60,16 +66,19 @@
               this.avatarUrl = url;
             });
           });
-          this.homePage = 'farm-hub-page';
+          //If they're on the guest page
+          if(this.$router.currentRoute.name == 'home-page-guest'){
+            //Redirect to  farm-hub-page
+            this.$router.push({name: "farm-hub-page"});
+          }
         } else {
           this.user = null;
-          this.homePage = 'home-page-guest';
         }
       })
     },
     watch:{
-      theme(newTheme){
-        this.$vuetify.themes.theme.light = themes[newTheme];
+      theme(){
+        this.updateTheme();
       }
     }
   }
