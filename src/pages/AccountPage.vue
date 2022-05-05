@@ -1,19 +1,27 @@
 <template>
 <v-container>
-  <h1>Account</h1>
+  <v-row align="center">
+    <v-col cols="1">
+      <v-btn :to="{name:'farm-hub-page'}"><v-icon>mdi-arrow-left</v-icon> Return to Farm</v-btn>
+    </v-col>
+    <v-col cols="10">
+      <h1>{{user ? user.username + "'s " : ''}}Account</h1>
+    </v-col>
+  </v-row>
   <h2 class="pt-5">Avatar</h2>
   <v-row class="pt-10">
-    <v-col class="col-4">
+    <v-col class="col-4 mb-3">
+      <h3>Your Avatar:</h3>
       <v-avatar size="200">
-        <v-img :src="avatarPreviewUrl" alt="avatar preview" :key="imageKey"></v-img>
+        <v-img :src="loadedAvatarUrl" alt="avatar preview"></v-img>
       </v-avatar>
     </v-col>
     <v-col class="col-4 align-self-center">
-      <v-form ref="avatarForm" submit.prevent v-model="validAvatar">
+      <v-form ref="avatarForm" submit.prevent>
         <v-file-input accept="image/*" v-on:change="changeImage" class="avatarPicker"
                       :rules="avatarRules" label="Upload New Avatar" show-size></v-file-input>
         <v-subheader class="pt-5">Please upload an image no larger than 5MB</v-subheader>
-        <v-btn class="mt-5 submitButton" @click="setAvatarPreview">Change Avatar</v-btn>
+        <v-btn class="mt-6 submitButton" @click="changeAvatar">Change Avatar</v-btn>
       </v-form>
     </v-col>
     <v-col class="col-4" v-if="showPreview">
@@ -28,46 +36,49 @@
     <v-form ref="usernameForm" submit.prevent>
       <v-row>
         <v-col>
-          <v-text-field disabled outlined label="Current Username: " :value="usernamePreview"></v-text-field>
+          <v-text-field disabled outlined label="Current Username: " :value="loadedUsername"></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field outlined label="New username: " v-model="newUsername"></v-text-field>
+          <v-text-field outlined label="New username: " :rules="usernameRules" v-model="newUsername"></v-text-field>
         </v-col>
       </v-row>
-      <v-btn class="mt-5 submitButton" @click="setUsernamePreview">Change Username</v-btn>
+      <v-btn class="my-3 submitButton" @click="changeUsername">Change Username</v-btn>
     </v-form>
   <hr>
   <h2>Theme</h2>
   <v-form ref="themeForm" submit.prevent>
     <v-radio-group mandatory v-model="newTheme">
-      <v-radio value="default" label="Default" color="black"></v-radio>
-      <v-radio value="natural" label="Natural" color="green"></v-radio>
+      <v-radio v-for="theme of themes" :key="theme" :disabled="!themeUnlocked(theme)"
+               :value="theme" :label="theme"></v-radio>
     </v-radio-group>
   </v-form>
+  <v-btn class="submitButton" @click="changeTheme">Change Theme</v-btn>
+  <hr class="my-3">
   <v-btn class="finalButton" @click="changeProfile">Save Changes</v-btn>
 </v-container>
 </template>
 
 <script>
-
-import { storage} from "@/plugins/vuefire";
+import {storage} from "@/plugins/vuefire";
+import ThemeLevelFormula from "@/models/ThemeLevelFormula";
 
 export default {
   name: "AccountPage",
   data(){
     return{
-      newImage: '',
-      imageKey: 0,
-      avatarPreviewUrl: '',
+      newAvatar: '',
       newAvatarUrl: '',
+      previewAvatarUrl: '',
       showPreview: false,
       avatarRules: [avatar => !!avatar || 'Please Upload a New Avatar',
-                    avatar => avatar.size < 5000000000 || 'Please Choose an Image Smaller Than 5MB'],
-      validAvatar: true,
-      usernamePreview: '',
+                    avatar => (avatar && (avatar?.size !== undefined || avatar.size < 5000000000)) ||
+                        'Please Choose an Image Smaller Than 5MB'],
+
       newUsername: '',
+      previewUsername: '',
+      usernameRules: [username => (username && username.trim().length > 0) || 'Please Enter a Username'],
+
       newTheme: '',
-      themePreview: '',
     }
   },
   props: {
@@ -78,78 +89,97 @@ export default {
     avatarUrl: {
       required: true,
       default: '',
+    },
+    currentTheme: {
+      required: true
+    },
+    themes: {
+      required: true,
+      default: [],
     }
   },
+  computed:{
+    loadedAvatarUrl(){
+      if(this.previewAvatarUrl === ''){
+        return this.avatarUrl;
+      } else {
+        return this.previewAvatarUrl;
+      }
+    },
+    loadedUsername(){
+      if(this.previewUsername === ''){
+        return this.user?.username;
+      } else {
+        return this.previewUsername;
+      }
+    },
+  },
   methods: {
-    setAvatarPreview(){
+    changeAvatar(){
       if(this.$refs.avatarForm.validate()){
-        console.log(this.newImage);
-        //Change src of avatar preview
-        this.avatarPreviewUrl = URL.createObjectURL(this.newImage);
-        this.showPreview = false;
         this.newAvatarUrl = '';
+        this.showPreview = false;
+        //Upload to firebase
+        let path = storage.ref("avatars").child(this.user.imageUrl);
+        path.put(this.newAvatar).then(() => {
+          this.$emit('refresh-avatar');
+        });
         this.$refs.avatarForm.reset();
       }
     },
-    avatarSubmit(){
-      if(this.$refs.avatarForm.validate()){
-       //Upload to firebase
-       //Get to the right spot
-       let path = storage.ref("avatars").child(this.user.imageUrl);
-       path.put(this.newImage);
-       new Promise(() => {
-         this.$emit('refresh-avatar');
-       }).then(() => {
-         this.imageKey++;
-       });
-      }
-    },
+
     changeImage(file){
       if(file){
-        this.newImage = file;
+        this.newAvatar = file;
         this.newAvatarUrl = URL.createObjectURL(file);
         this.showPreview = true;
       }
     },
-    setUsernamePreview(){
+
+    changeUsername(){
       if(this.$refs.usernameForm.validate()){
-        this.usernamePreview = this.newUsername;
+        console.log(this.newUsername);
+        this.$emit('update-username', this.newUsername);
         this.newUsername = '';
+        this.$refs.usernameForm.reset();
       }
     },
-    usernameSubmit(){
-      console.log("New username: " + this.usernamePreview);
-      console.log("Id: " + this.user.id);
-      // db.collection("users").doc(this.user.id).update({
-      //   username: this.newUsername,
-      // })
+
+    themeUnlocked(theme){
+      return this.user?.level >= ThemeLevelFormula(this.themes.indexOf(theme));
+    },
+    changeTheme(){
+      if(this.$refs.themeForm.validate()){
+        this.$emit('change-theme', this.newTheme);
+      }
     },
     changeProfile(){
-      //If there's a new value in an area that hasn't been validatied
-      if(this.newAvatarUrl){
-        //Validate it
-        this.setAvatarPreview();
+      //If there's values the user hasn't submitted them, try to submit them
+      if(this.newAvatarUrl !== ''){
+        this.changeAvatar();
       }
-      if(this.newUsername){
-        this.setUsernamePreview();
+      if(this.newUsername !== ''){
+        this.changeUsername();
       }
-      //Apply the changes
-      this.avatarSubmit();
-      this.usernameSubmit(this.newUsername);
-      this.$emit('change-theme', this.newTheme);
+      if(this.newTheme !== this.currentTheme){
+        this.changeTheme();
+      }
+    },
+  },
+  watch: {
+    currentTheme(newTheme){
+      this.newTheme = newTheme;
     }
   },
   mounted(){
-    console.log("Hello");
-    this.avatarPreviewUrl = this.avatarUrl;
-    this.usernamePreview = this.user.username;
-  },
+    this.newTheme = this.currentTheme;
+  }
 }
 </script>
 
 <style scoped lang="scss">
   .avatarPicker {
-    //TODO: Theme here
+    //TODO: Theme Here
     //@include generateThemes(){
     //  padding: 1rem;
     //  border-radius: 0.5rem;

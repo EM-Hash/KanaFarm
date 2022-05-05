@@ -4,8 +4,9 @@
       <v-app-bar clipped-right clipped-left app fixed id="banner">
         <site-banner :home-page="homePage"></site-banner>
       </v-app-bar>
-      <router-view :user="user" :avatar-url="avatarUrl"
-      v-on:change-theme="changeTheme($event)"></router-view>
+      <router-view :user="user" :avatar-url="avatarUrl" :themes="themeArray" :currentTheme="theme"
+                   v-on:update-username="updateUsername" v-on:change-theme="changeTheme" v-on:add-user="addUser"
+                   v-on:refresh-avatar="refreshAvatar"></router-view>
       <site-footer></site-footer>
     </v-app>
   </div>
@@ -26,6 +27,7 @@
 
     data(){
       return {
+        users: [],
         user: null,
         avatarUrl: '',
       }
@@ -36,17 +38,39 @@
       },
       homePage(){
         return this.user ? 'farm-hub-page' : 'home-page-guest';
-      }
+      },
+      themeArray(){
+        let array = [];
+        for(let theme in themes){
+          array.push(theme);
+        }
+        return array;
+      },
     },
     components: {SiteFooter, SiteBanner},
     methods: {
-      changeTheme(){
-        //TODO: Change theme for the user
-        //Change the theme in the app
-        this.updateTheme();
+      changeTheme(newTheme){
+        db.collection('users').doc(this.user._id).update({
+          theme: newTheme,
+        }).then(() => {
+          this.updateTheme();
+        });
       },
       updateTheme(){
         this.$vuetify.theme.themes.light = themes[this.theme];
+      },
+      addUser(user){
+        console.log(user);
+      },
+      refreshAvatar(){
+        storage.ref("avatars").child(this.user.imageUrl).getDownloadURL().then(url => {
+          this.avatarUrl = url;
+        });
+      },
+      updateUsername(username){
+        db.collection("users").doc(this.user._id).update({
+          username: username,
+        })
       }
     },
     router,
@@ -55,16 +79,12 @@
     updated(){
       this.updateTheme();
     },
-    mounted(){
+    firestore(){
       auth.onAuthStateChanged(user => {
         if(user){
-          let targetUser;
-          db.collection('users').doc(user.uid).get().then(querySnapshot => {
-            targetUser = querySnapshot.data();
-            this.user = new User(targetUser, user.uid);
-            storage.ref("avatars").child(this.user.imageUrl).getDownloadURL().then(url => {
-              this.avatarUrl = url;
-            });
+          db.collection('users').doc(user.uid).withConverter(User).onSnapshot((doc) => {
+            this.user = doc.data();
+            this.refreshAvatar();
           });
           //If they're on the guest page
           if(this.$router.currentRoute.name == 'home-page-guest'){
@@ -75,6 +95,9 @@
           this.user = null;
         }
       })
+    },
+    mounted(){
+
     },
     watch:{
       theme(){
@@ -108,7 +131,7 @@ header#banner{
   }
 }
 
-nav.side-bar{
+nav.side-bar.v-navigation-drawer{
   background-color: var(--v-primary-base);
   padding: 30px;
 
