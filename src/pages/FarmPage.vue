@@ -10,23 +10,23 @@
               </v-list-item-avatar>
             </v-list-item>
             <v-list-item>
+              <v-list-item-title class="username">{{user ? user.username : 'User'}}</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
               <v-list-item-content>
                 <v-row class="justify-space-between">
                   <v-col class="col-auto">
-                    <v-list-item-subtitle>{{user.exp}}/{{maxExp}}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{userExp}}/{{maxExp}}</v-list-item-subtitle>
                   </v-col>
                   <v-col class="col-auto">
-                    <v-list-item-subtitle>Lv. {{user.level}}</v-list-item-subtitle>
+                    <v-list-item-subtitle>Lv. {{user ? user.level : 0}}</v-list-item-subtitle>
                   </v-col>
                 </v-row>
-                <v-progress-linear :value="user.exp/maxExp * 100" rounded striped color="custom"></v-progress-linear>
+                <v-progress-linear :value="userExp/maxExp * 100" rounded striped color="custom"></v-progress-linear>
               </v-list-item-content>
             </v-list-item>
             <v-list-item>
               <v-list-item-title>Badges</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Themes</v-list-item-title>
             </v-list-item>
             <v-list-item>
               <v-list-item-title>Backgrounds</v-list-item-title>
@@ -35,9 +35,6 @@
               <v-list-item-title>Account</v-list-item-title>
             </v-list-item>
             <v-list-item>
-              <v-list-item-title>Settings</v-list-item-title>
-            </v-list-item>
-            <v-list-item class="pt-16">
               <v-list-item-title><a href="#" @click="logOut()">Log Out</a></v-list-item-title>
             </v-list-item>
           </v-list>
@@ -96,6 +93,13 @@ name: "FarmPage",
     avatarUrl: {required: true},
   },
   computed:{
+    userExp: function(){
+      if(this.user){
+        return this.user.exp;
+      } else {
+        return 0;
+      }
+    },
     maxExp: function(){
       if(this.user){
         return LevelExpFormula(this.user.level);
@@ -104,14 +108,16 @@ name: "FarmPage",
       }
     },
     farmName(){
-      let farmName = this.user.farmName;
-      if(farmName !== ''){
-        //Trim the quotation marks off
-        farmName = farmName.slice(1).slice(0, farmName.length - 2);
-        return farmName;
-      } else {
-        return "My Farm";
+      if(this.user){
+        let farmName = this.user.farmName;
+        if(farmName !== ''){
+          //Trim the quotation marks off
+          farmName = farmName.slice(1).slice(0, farmName.length - 2);
+          return farmName;
+        }
       }
+      return "My Farm";
+
     }
   },
   methods:{
@@ -139,10 +145,7 @@ name: "FarmPage",
 
 <style scoped lang="scss">
   .v-progress-linear{
-    //TODO: Theme Here
-    //@include generateThemes{
-    //  background-color: themeValue('accent');
-    //}
+    background-color: var(--v-accent-base);
   }
 
   .farm{
@@ -154,7 +157,7 @@ name: "FarmPage",
 
   #barn{
     position: absolute;
-    right: 0%;
+    right: 0;
     max-height: 100%;
     object-fit: contain;
     object-position: right bottom;
@@ -182,5 +185,10 @@ name: "FarmPage",
 
   #activities-subgroup{
     position: relative;
+  }
+
+  .username{
+    font-size: x-large;
+    text-align: center;
   }
 </style>
