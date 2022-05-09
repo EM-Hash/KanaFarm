@@ -9,10 +9,12 @@ import RoundUpPage from "@/pages/RoundUpPage";
 import SignInPage from "@/pages/SignInPage";
 import SignUpPage from "@/pages/SignUpPage";
 import AccountPage from "@/pages/AccountPage";
+import BadgesPage from "@/pages/BadgesPage";
+import BackgroundsPage from "@/pages/BackgroundsPage";
 
 const routes = [
     {name: 'home-page-guest', path: '/', component: HomePageGuest},
-    {path: '/farm', component: FarmPage,children: [
+    {path: '/farm', component: FarmPage, children: [
         {name: 'farm-hub-page', path:'/', component: FarmHubPage},
         {name: 'feeding-time-page', path:'/feeding-time', component: FeedingTimePage},
         {name: 'treat-time-page', path:'/treat-time', component: TreatTimePage},
@@ -20,7 +22,9 @@ const routes = [
     ]},
     {name: 'sign-in-page', path: '/sign-in', component: SignInPage},
     {name: 'sign-up-page', path: '/sign-up', component: SignUpPage},
-    {name: 'account-page', path: '/account', component: AccountPage}
+    {name: 'account-page', path: '/account', component: AccountPage},
+    {name: 'backgrounds-page', path: '/backgrounds', component: BackgroundsPage},
+    {name: 'badges-page', path: '/badges', component: BadgesPage}
 ];
 
 const router = new VueRouter({routes});

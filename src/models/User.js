@@ -8,6 +8,7 @@ export default function User(firebaseUser){
         badges: [],
         imageUrl: '',
         theme: '',
+        background: '',
         _id: '',
     }
 
@@ -20,6 +21,7 @@ export default function User(firebaseUser){
         this.badges = firebaseUser.badges ? firebaseUser.badges : [];
         this.imageUrl = firebaseUser.imageUrl ? firebaseUser.imageUrl : '';
         this.theme = firebaseUser.theme ? firebaseUser.theme : 'default';
+        this.background = firebaseUser.background ? firebaseUser.background : 'default';
         this._id = firebaseUser._id || '';
     }
 
@@ -33,6 +35,7 @@ export default function User(firebaseUser){
             imageUrl: this.imageUrl,
             level: this.level,
             theme: this.theme,
+            background: this.background,
             username: this.username
         }
     };

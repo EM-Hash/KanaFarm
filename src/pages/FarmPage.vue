@@ -25,10 +25,10 @@
                 <v-progress-linear :value="userExp/maxExp * 100" rounded striped color="custom"></v-progress-linear>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item>
+            <v-list-item :to="{name:'badges-page'}">
               <v-list-item-title>Badges</v-list-item-title>
             </v-list-item>
-            <v-list-item>
+            <v-list-item :to="{name:'backgrounds-page'}">
               <v-list-item-title>Backgrounds</v-list-item-title>
             </v-list-item>
             <v-list-item :to="{name:'account-page'}">
@@ -73,7 +73,6 @@
         </v-navigation-drawer>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -127,17 +126,19 @@ name: "FarmPage",
     },
     addExp(exp){
       let user = this.user
-      user.exp += exp;
-      if(user.exp >= LevelExpFormula(user.level)){
-        user.exp = user.exp - LevelExpFormula(user.level);
-        user.level++;
+      if(user){
+        user.exp += exp;
+        if(user.exp >= LevelExpFormula(user.level)){
+          user.exp = user.exp - LevelExpFormula(user.level);
+          user.level++;
+        }
+        console.log(user);
+        //Update doc
+        db.collection('users').doc(user._id).update({
+          exp: user.exp,
+          level: user.level
+        })
       }
-      console.log(user);
-      //Update doc
-      db.collection('users').doc(user._id).update({
-        exp: user.exp,
-        level: user.level
-      })
     }
   }
 }

@@ -10,7 +10,7 @@ const themes = {
     },
     natural: {
         primary: '#32641D',
-        secondary: '#1d644f',
+        secondary: '#a0d670',
         accent: '#641d56',
         error: '#8a0003',
         warning: '#C06C1E',

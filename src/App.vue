@@ -1,12 +1,13 @@
 <template>
-  <div id="app" :class="theme">
+  <div id="app" :class="theme + ' ' + background">
     <v-app>
       <v-app-bar clipped-right clipped-left app fixed id="banner">
         <site-banner :home-page="homePage"></site-banner>
       </v-app-bar>
-      <router-view :user="user" :avatar-url="avatarUrl" :themes="themeArray" :currentTheme="theme"
+      <router-view class="actionPanel" :user="user" :avatar-url="avatarUrl" :themes="themeArray" :currentTheme="theme"
+                   :background-names="backgrounds"
                    v-on:update-username="updateUsername" v-on:change-theme="changeTheme" v-on:add-user="addUser"
-                   v-on:refresh-avatar="refreshAvatar"></router-view>
+                   v-on:refresh-avatar="refreshAvatar" v-on:change-background="changeBackground"></router-view>
       <site-footer></site-footer>
     </v-app>
   </div>
@@ -30,6 +31,7 @@
         users: [],
         user: null,
         avatarUrl: '',
+        backgrounds: ['bg-default', 'bg-striped-blue', 'bg-striped-green', 'bg-flowers-blue'],
       }
     },
     computed: {
@@ -46,6 +48,9 @@
         }
         return array;
       },
+      background(){
+        return this.user ? this.user.background : this.backgrounds[0];
+      }
     },
     components: {SiteFooter, SiteBanner},
     methods: {
@@ -60,6 +65,23 @@
         this.$vuetify.theme.themes.light = themes[this.theme];
       },
       addUser(user){
+        console.log("We're here!");
+        //Create the user
+        auth.createUserWithEmailAndPassword(user.email, user.password).then((createdUser) => {
+          let _id = createdUser.user.uid;
+          let newUser = new User();
+          newUser.username = user.username;
+          newUser.farmName = user.farmName;
+          newUser.email = user.email;
+          newUser.theme = 'default';
+          newUser.background = 'bg-default';
+          newUser._id = _id;
+          newUser.level = 1;
+          //Add the user to firebase
+          db.collection('users').doc(createdUser.user.uid).withConverter(User).set({newUser});
+        }).catch((error) => {
+          console.log("Error Code " + error.code + ": " + error.message);
+        });
         console.log(user);
       },
       refreshAvatar(){
@@ -71,6 +93,11 @@
         db.collection("users").doc(this.user._id).update({
           username: username,
         })
+      },
+      changeBackground(newBackground){
+        db.collection('users').doc(this.user._id).update({
+          background: newBackground,
+        });
       }
     },
     router,
@@ -116,7 +143,7 @@
   color: black;
 }
 
-.container{
+.actionPanel{
   margin-top: 5rem;
   height: 100%;
   width: 100%;
@@ -143,5 +170,11 @@ nav.side-bar.v-navigation-drawer{
       color: #42b983;
     }
   }
+}
+
+.page{
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 1rem;
+  border-radius: 1.5rem;
 }
 </style>

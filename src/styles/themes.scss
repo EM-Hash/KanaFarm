@@ -1,9 +1,11 @@
 $default-theme: (
+        "name": "Default",
         "font": "'Libre Baskerville', serif",
         "background-color": #f7ede2,
 );
 
 $natural-theme: (
+        "name": "Natural",
         "font": "'Bitter', serif",
         "background-color": #e8ce8d,
 );
@@ -26,7 +28,43 @@ $natural-theme: (
   @include applyTheme($default-theme);
 }
 
+.bg-default-default{
+  @include applyTheme($default-theme);
+}
+
 .natural{
   @include applyTheme($natural-theme);
 }
 
+.bg-default{
+  #app{
+    background-image: none;
+  }
+}
+
+.bg-striped-green{
+  #app{
+    background-image: url("../assets/Stripes Green.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+}
+
+.bg-striped-blue{
+  #app{
+    background-image: url("../assets/Stripes Blue.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+}
+
+.bg-flowers-blue{
+  #app{
+    background-image: url("../assets/Flowers Blue.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+}

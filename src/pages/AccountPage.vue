@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container class="page">
   <v-row align="center">
     <v-col cols="1">
       <v-btn :to="{name:'farm-hub-page'}"><v-icon>mdi-arrow-left</v-icon> Return to Farm</v-btn>

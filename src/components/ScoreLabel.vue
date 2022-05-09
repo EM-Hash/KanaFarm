@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import 'animate.css';
+
 const animateCSS = (element, animation, prefix = 'animate__') =>
     // We create a Promise and return it
     new Promise((resolve) => {
