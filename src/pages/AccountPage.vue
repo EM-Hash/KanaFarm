@@ -49,7 +49,7 @@
   <v-form ref="themeForm" submit.prevent>
     <v-radio-group mandatory v-model="newTheme">
       <v-radio v-for="theme of themes" :key="theme" :disabled="!themeUnlocked(theme)"
-               :value="theme" :label="theme"></v-radio>
+               :value="theme" :label="theme + (themeUnlocked(theme) ? '' : ` (Unlocked at level ${getThemeLevel(theme)})`)"></v-radio>
     </v-radio-group>
   </v-form>
   <v-btn class="submitButton" @click="changeTheme">Change Theme</v-btn>
@@ -146,8 +146,13 @@ export default {
     },
 
     themeUnlocked(theme){
-      return this.user?.level >= ThemeLevelFormula(this.themes.indexOf(theme));
+      return this.user?.level >= this.getThemeLevel(theme);
     },
+
+    getThemeLevel(theme){
+      return ThemeLevelFormula(this.themes.indexOf(theme));
+    },
+
     changeTheme(){
       if(this.$refs.themeForm.validate()){
         this.$emit('change-theme', this.newTheme);

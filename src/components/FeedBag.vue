@@ -21,6 +21,10 @@ name: "FeedBag",
     background-color: lightgoldenrodyellow;
   }
 
+  .container:hover{
+    cursor: pointer;
+  }
+
   .selected{
     background-color: goldenrod;
     color: green;

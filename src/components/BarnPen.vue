@@ -35,6 +35,10 @@ export default {
     background-color: grey;
   }
 
+  .penLetter:hover{
+    cursor: pointer;
+  }
+
   .penFeed{
     background-color: lightgoldenrodyellow;
   }

@@ -1,3 +1,5 @@
+// import {db} from "@/plugins/vuefire";
+
 export default function User(firebaseUser){
     this.user = {
         username: '',
@@ -10,6 +12,8 @@ export default function User(firebaseUser){
         theme: '',
         background: '',
         _id: '',
+        daysActive: 0,
+        lastActive: '',
     }
 
     if(firebaseUser){
@@ -23,22 +27,9 @@ export default function User(firebaseUser){
         this.theme = firebaseUser.theme ? firebaseUser.theme : 'default';
         this.background = firebaseUser.background ? firebaseUser.background : 'default';
         this._id = firebaseUser._id || '';
+        this.daysActive = firebaseUser.daysActive;
+        this.lastActive = firebaseUser.lastActive;
     }
-
-    this.toFirestore = function(){
-        return{
-            _id: this._id,
-            badges: this.badges,
-            email: this.email,
-            exp: this.exp,
-            farmName: this.farmName,
-            imageUrl: this.imageUrl,
-            level: this.level,
-            theme: this.theme,
-            background: this.background,
-            username: this.username
-        }
-    };
 }
 
 User.fromFirestore = function(snapshot, options){
@@ -46,3 +37,20 @@ User.fromFirestore = function(snapshot, options){
 
     return new User(data);
 }
+
+User.toFirestore = function(user){
+    return{
+        _id: user._id || '',
+        badges: user.badges || '',
+        email: user.email || '',
+        exp: user.exp || 0,
+        farmName: user.farmName || '',
+        imageUrl: user.imageUrl || '',
+        level: user.level || 0,
+        theme: user.theme || 'default',
+        background: user.background || 'bg-default',
+        username: user.username || '',
+        daysActive: user.daysActive,
+        lastActive: user.lastActive,
+    }
+};

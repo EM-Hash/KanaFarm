@@ -25,7 +25,7 @@
                 <v-progress-linear :value="userExp/maxExp * 100" rounded striped color="custom"></v-progress-linear>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="{name:'badges-page'}">
+            <v-list-item>
               <v-list-item-title>Badges</v-list-item-title>
             </v-list-item>
             <v-list-item :to="{name:'backgrounds-page'}">
@@ -79,6 +79,7 @@
 <script>
 import {auth, db} from "@/plugins/vuefire";
 import LevelExpFormula from "@/models/LevelExpFormula";
+import {FOCI} from "@/models/Badge";
 
 export default {
 name: "FarmPage",
@@ -110,14 +111,11 @@ name: "FarmPage",
       if(this.user){
         let farmName = this.user.farmName;
         if(farmName !== ''){
-          //Trim the quotation marks off
-          farmName = farmName.slice(1).slice(0, farmName.length - 2);
           return farmName;
         }
       }
       return "My Farm";
-
-    }
+    },
   },
   methods:{
     logOut(){
@@ -131,6 +129,8 @@ name: "FarmPage",
         if(user.exp >= LevelExpFormula(user.level)){
           user.exp = user.exp - LevelExpFormula(user.level);
           user.level++;
+          //Check if the user's earned a badge through levelling up
+          this.$emit('check-badges', FOCI.LEVEL);
         }
         console.log(user);
         //Update doc
@@ -191,5 +191,15 @@ name: "FarmPage",
   .username{
     font-size: x-large;
     text-align: center;
+  }
+
+  .v-list-item__avatar{
+    div{
+      background-color: var(--v-accent-base);
+    }
+  }
+
+  div.v-list-group__header *{
+    color: black;
   }
 </style>

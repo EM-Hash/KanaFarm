@@ -14,11 +14,7 @@
  * @constructor
  */
 
-export default function Badge(name, description, badgeImage, foci, method, target){
-    const FOCI = {TREAT_TIME: 'treat time', FEEDING_TIME: 'feeding time', ROUND_UP: 'round up',
-        LEVEL: 'level', ATTENDANCE: 'visit site'};
-    const METHODS = {PLAY: 'play', SCORE: 'score', VISIT_SITE: 'visit site', LEVEL_UP: 'level up'}
-
+function Badge(name, description, badgeImage, foci, method, target){
     this.name = name || '';
     this.description = description || '';
     this.badgeImage = badgeImage || '';
@@ -26,3 +22,10 @@ export default function Badge(name, description, badgeImage, foci, method, targe
     this.method = method || METHODS.LEVEL_UP;
     this.target = target || 0;
 }
+
+const FOCI = {TREAT_TIME: 'treat time', FEEDING_TIME: 'feeding time', ROUND_UP: 'round up',
+    LEVEL: 'level', ATTENDANCE: 'visit site'};
+const METHODS = {PLAY: 'play', SCORE: 'score', VISIT_SITE: 'visit site', LEVEL_UP: 'level up'}
+
+
+export {Badge, FOCI, METHODS}

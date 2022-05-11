@@ -145,7 +145,7 @@
         this.score -= score;
       },
       useChar(char){
-        this.unusedChars.splice(this.unusedChars.indexOf(char.character), 1);
+        this.unusedChars.splice(this.unusedChars.indexOf(char), 1);
       }
     },
     mounted(){

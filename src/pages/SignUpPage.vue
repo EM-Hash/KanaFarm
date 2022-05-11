@@ -1,7 +1,10 @@
 <template>
   <v-container>
     <h1>Sign Up</h1>
-    <v-subheader>Already have an account? <router-link :to="{name:'sign-in-page'}">Sign In Here</router-link></v-subheader>
+    <v-subheader class="justify-center">
+      Already have an account?<router-link :to="{name:'sign-in-page'}" class="pl-1">Sign In Here</router-link>
+    </v-subheader>
+    <v-container class="red--text" v-if="errorMessage !== ''">Error: {{errorMessage}}</v-container>
     <v-form submit.prevent>
       <v-text-field label="Email" v-model="email"></v-text-field>
       <v-text-field label="Username" v-model="username"></v-text-field>
@@ -25,6 +28,9 @@ name: "SignUpPage",
       username: '',
       farmName: '',
     }
+  },
+  props: {
+    errorMessage: {default: ''},
   },
   methods: {
     addUser(){

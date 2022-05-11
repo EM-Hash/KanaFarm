@@ -84,7 +84,7 @@ name: "FeedingGame",
         let pen = new Pen(char.letter);
         this.pens.push(pen);
         this.feedBags.push(feed);
-        this.$emit('use-char', char);
+        this.$emit('use-char', character);
       }
       //Fill in any remaining feedbags
       if(this.feedCount > this.penCount){
@@ -249,14 +249,14 @@ name: "FeedingGame",
 
   .penArea{
     position: absolute;
-    height: 80%;
+    height: 70%;
     padding:0;
     margin: 0;
   }
 
   .feedArea{
     height: 20%;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.3);
     padding:0;
     margin: 0;
     display: flex;
