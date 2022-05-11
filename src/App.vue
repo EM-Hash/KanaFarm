@@ -127,30 +127,9 @@
     firestore(){
       auth.onAuthStateChanged(user => {
         if(user){
-          new Promise(() => {
-            db.collection('users').doc(user.uid).withConverter(User).onSnapshot((doc) => {
-              this.user = doc.data();
-              this.refreshAvatar();
-              //Update when the user was on last
-              this.user.lastActive = Date.now();
-              //Update the doc's user
-              db.collection('users').doc(user.uid).set(User.toFirestore(this.user));
-            });
-            //If they're on the guest page
-            if(this.$router.currentRoute.name == 'home-page-guest'){
-              //Redirect to  farm-hub-page
-              this.$router.push({name: "farm-hub-page"});
-            }
-          }).then(() => {
-            console.log("Hello!");
-          });
           db.collection('users').doc(user.uid).withConverter(User).onSnapshot((doc) => {
             this.user = doc.data();
             this.refreshAvatar();
-            //Update when the user was on
-            this.user.lastActive = Date.now();
-            //Update the doc's user
-            db.collection('users').doc(user.uid).set(User.toFirestore(this.user));
           });
           //If they're on the guest page
           if(this.$router.currentRoute.name == 'home-page-guest'){
