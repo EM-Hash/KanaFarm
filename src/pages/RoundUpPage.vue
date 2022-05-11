@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <h1>Hello! Round Up Page Here</h1>
+  <v-container class="page">
+    <h1>Under Construction</h1>
   </v-container>
 </template>
 
