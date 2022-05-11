@@ -9,7 +9,6 @@ import RoundUpPage from "@/pages/RoundUpPage";
 import SignInPage from "@/pages/SignInPage";
 import SignUpPage from "@/pages/SignUpPage";
 import AccountPage from "@/pages/AccountPage";
-import BadgesPage from "@/pages/BadgesPage";
 import BackgroundsPage from "@/pages/BackgroundsPage";
 
 const routes = [
@@ -24,7 +23,6 @@ const routes = [
     {name: 'sign-up-page', path: '/sign-up', component: SignUpPage},
     {name: 'account-page', path: '/account', component: AccountPage},
     {name: 'backgrounds-page', path: '/backgrounds', component: BackgroundsPage},
-    {name: 'badges-page', path: '/badges', component: BadgesPage}
 ];
 
 const router = new VueRouter({routes});

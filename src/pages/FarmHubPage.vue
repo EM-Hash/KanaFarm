@@ -19,7 +19,7 @@
     <router-link :to="{name: 'treat-time-page'}">
       <v-tooltip right>
       <template v-slot:activator="{on, attrs}">
-        <div id="animal" class="horse" alt="animal" v-bind="attrs" v-on="on"></div>
+        <div id="animal" class="horse" v-bind="attrs" v-on="on"></div>
       </template>
       <span>Play "Treat Time"</span>
     </v-tooltip>
@@ -51,7 +51,7 @@ name: "FarmHubPage",
 
 #barn{
   position: absolute;
-  right: 0%;
+  right: 0;
   max-height: 100%;
   object-fit: contain;
   object-position: right bottom;

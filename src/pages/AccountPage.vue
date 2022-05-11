@@ -183,14 +183,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .avatarPicker {
-    //TODO: Theme Here
-    //@include generateThemes(){
-    //  padding: 1rem;
-    //  border-radius: 0.5rem;
-    //  background-color: themeValue('secondary');
-    //}
-  }
 
   input[type="file"]{
     opacity: 0;

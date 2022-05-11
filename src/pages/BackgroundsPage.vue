@@ -61,9 +61,9 @@ name: "BackgroundsPage",
     background-size: 100% 34rem;
   }
 
-  div.bg-default{
-    background-color: #f7ede2;
-  }
+  //div.bg-default{
+  //  background-color: #f7ede2;
+  //}
 
   .bg-striped-blue{
     background-repeat: no-repeat;

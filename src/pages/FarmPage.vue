@@ -25,9 +25,6 @@
                 <v-progress-linear :value="userExp/maxExp * 100" rounded striped color="custom"></v-progress-linear>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Badges</v-list-item-title>
-            </v-list-item>
             <v-list-item :to="{name:'backgrounds-page'}">
               <v-list-item-title>Backgrounds</v-list-item-title>
             </v-list-item>
@@ -79,7 +76,6 @@
 <script>
 import {auth, db} from "@/plugins/vuefire";
 import LevelExpFormula from "@/models/LevelExpFormula";
-import {FOCI} from "@/models/Badge";
 
 export default {
 name: "FarmPage",
@@ -129,11 +125,7 @@ name: "FarmPage",
         if(user.exp >= LevelExpFormula(user.level)){
           user.exp = user.exp - LevelExpFormula(user.level);
           user.level++;
-          //Check if the user's earned a badge through levelling up
-          this.$emit('check-badges', FOCI.LEVEL);
         }
-        console.log(user);
-        //Update doc
         db.collection('users').doc(user._id).update({
           exp: user.exp,
           level: user.level
