@@ -12,7 +12,6 @@ export default function User(firebaseUser){
         theme: '',
         background: '',
         _id: '',
-        lastActive: '',
     }
 
     if(firebaseUser){
@@ -26,7 +25,6 @@ export default function User(firebaseUser){
         this.theme = firebaseUser.theme ? firebaseUser.theme : 'default';
         this.background = firebaseUser.background ? firebaseUser.background : 'default';
         this._id = firebaseUser._id || '';
-        this.lastActive = firebaseUser.lastActive;
     }
 }
 
@@ -48,6 +46,5 @@ User.toFirestore = function(user){
         theme: user.theme || 'default',
         background: user.background || 'bg-default',
         username: user.username || '',
-        lastActive: user.lastActive,
     }
 };
